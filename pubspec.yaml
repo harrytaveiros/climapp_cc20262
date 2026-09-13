@@ -10,7 +10,9 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # In Android, build-name is used as versionName while build-number used as versionCode.
-# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# Read more about Android versioning at https://developer.android.com/studio/build/application-id.html).
+# You can update the following values to match your application needs.
+# For more information, see: https://flutter.dev/to/review-gradle-config.
 # In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
@@ -43,6 +45,7 @@ dependencies:
   flutter_compass: ^0.8.1
   firebase_core: ^4.14.0
   firebase_messaging: ^16.6.0
+  device_info_plus: ^10.1.0
 
 dev_dependencies:
   flutter_test:
