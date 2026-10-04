@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 /// RegionBadgeWidget exibe o emoji da bandeira com um efeito de Glassmorphism.
+/// Possui tratamento de erro interno para garantir a estabilidade da UI.
 class RegionBadgeWidget extends StatelessWidget {
   final String emoji;
 
@@ -9,6 +10,9 @@ class RegionBadgeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Fallback de segurança: se o emoji for inválido/vazio, mostra o globo
+    final String displayEmoji = emoji.isEmpty ? '🌍' : emoji;
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: BackdropFilter(
@@ -19,16 +23,9 @@ class RegionBadgeWidget extends StatelessWidget {
             color: Colors.white.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.white.withOpacity(0.2)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
           ),
           child: Text(
-            emoji,
+            displayEmoji,
             style: const TextStyle(fontSize: 24),
           ),
         ),

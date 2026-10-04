@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import '../services/region_service.dart';
+import '../services/device_info_service.dart';
 
 /// RegionController gerencia o estado da região para a View.
 /// Segue o padrão MVC e utiliza ChangeNotifier para reatividade.
 class RegionController extends ChangeNotifier {
-  final RegionService _service = RegionService.instance;
+  final DeviceInfoService _deviceInfoService = DeviceInfoService();
   
   String _countryEmoji = '🌐';
   String get countryEmoji => _countryEmoji;
 
   /// Inicializa a captura da região e atualiza o emoji
   void updateRegion() {
-    final code = _service.getDeviceCountryCode();
-    _countryEmoji = _service.countryCodeToEmoji(code);
+    _countryEmoji = _deviceInfoService.getCountryEmoji();
     notifyListeners();
   }
 }
