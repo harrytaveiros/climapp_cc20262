@@ -1,6 +1,7 @@
 import 'package:climapp_cc20262/src/screens/welcome_screen.dart';
 import 'package:climapp_cc20262/src/screens/list_city_screen.dart';
 import 'package:climapp_cc20262/src/services/notification_service.dart';
+import 'package:climapp_cc20262/src/services/network_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,10 @@ Future<void> main() async {
   // 2. Configura o handler de background antes de qualquer outra coisa do FCM
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   
-  // 3. Inicializa o serviço de notificações (solicita permissões e obtém token)
+  // 3. Inicializa o monitor de rede em tempo real (AGUARDA a verificação inicial)
+  await NetworkService().initialize();
+  
+  // 4. Inicializa o serviço de notificações (solicita permissões e obtém token)
   final notificationService = NotificationService();
   await notificationService.initialize();
   
@@ -50,8 +54,6 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const WelcomeScreen(),
         '/list': (context) => const ListCityScreen(),
-        // A rota /weather pode ser tratada via onGenerateRoute se precisar de argumentos complexos
-        // ou simplificada no NotificationService para ir para a lista ou detalhe.
       },
       initialRoute: '/',
     );

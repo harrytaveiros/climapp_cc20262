@@ -13,14 +13,26 @@ class NetworkService {
   /// ValueNotifier que transmite o estado da conexão (true = online, false = offline)
   final ValueNotifier<bool> isOnline = ValueNotifier<bool>(true);
 
-  /// Inicializa o listener de conectividade.
-  void initialize() {
+  /// Inicializa o listener de conectividade com uma verificação inicial.
+  Future<void> initialize() async {
+    // 1. Verificação inicial imediata do estado da rede para evitar atrasos no build inicial
+    final results = await _connectivity.checkConnectivity();
+    _updateStatus(results);
+
+    // 2. Escuta mudanças subsequentes em tempo real
     _connectivity.onConnectivityChanged.listen((List<ConnectivityResult> results) {
-      // Verifica se há alguma conexão ativa (Wifi, Mobile, etc.)
-      final bool hasConnection = results.any((result) => result != ConnectivityResult.none);
-      isOnline.value = hasConnection;
-      debugPrint('NetworkService: Conexão alterada. Online: $hasConnection');
+      _updateStatus(results);
     });
+  }
+
+  /// Lógica centralizada para atualizar o ValueNotifier apenas quando o estado mudar.
+  void _updateStatus(List<ConnectivityResult> results) {
+    final bool hasConnection = results.any((result) => result != ConnectivityResult.none);
+    
+    if (isOnline.value != hasConnection) {
+      isOnline.value = hasConnection;
+      debugPrint('NetworkService: Status de rede alterado. Conectado: $hasConnection');
+    }
   }
 
   /// Realiza uma verificação pontual da conexão.
