@@ -14,8 +14,9 @@ class NetworkService {
   final ValueNotifier<bool> isOnline = ValueNotifier<bool>(true);
 
   /// Inicializa o listener de conectividade com uma verificação inicial.
+  /// Retorna um Future para permitir que o app aguarde o estado inicial na inicialização.
   Future<void> initialize() async {
-    // 1. Verificação inicial imediata do estado da rede para evitar atrasos no build inicial
+    // 1. Verificação inicial imediata do estado da rede
     final results = await _connectivity.checkConnectivity();
     _updateStatus(results);
 

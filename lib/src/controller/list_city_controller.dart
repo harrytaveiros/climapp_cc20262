@@ -28,19 +28,24 @@ class ListCityController extends ChangeNotifier {
     _initNetworkListener();
   }
 
+  /// Callback para mudanças na conexão.
+  /// Definido separadamente para permitir sua remoção no dispose.
+  void _onNetworkChange() {
+    if (_networkService.isOnline.value) {
+      errorMessage = null;
+      // Se voltou a ficar online e a lista está vazia ou com erro, tenta carregar
+      if (allCities.isEmpty || errorMessage != null) {
+        loadCities();
+      }
+    } else {
+      errorMessage = 'Você está offline. Verifique sua conexão.';
+    }
+    notifyListeners();
+  }
+
   /// Escuta mudanças na conexão e reage automaticamente
   void _initNetworkListener() {
-    _networkService.isOnline.addListener(() {
-      if (_networkService.isOnline.value) {
-        // Se voltou a ficar online e a lista está vazia ou com erro, tenta carregar
-        if (allCities.isEmpty || errorMessage != null) {
-          loadCities();
-        }
-      } else {
-        errorMessage = 'Você está offline. Verifique sua conexão.';
-      }
-      notifyListeners();
-    });
+    _networkService.isOnline.addListener(_onNetworkChange);
   }
 
   /// Carrega a previsão do tempo para a lista pré-definida de cidades.
@@ -88,7 +93,8 @@ class ListCityController extends ChangeNotifier {
 
   @override
   void dispose() {
-    // Importante: remover listeners se necessário, mas o NetworkService é Singleton
+    // REMOÇÃO OBRIGATÓRIA: Evita Memory Leak ao remover o listener do Singleton
+    _networkService.isOnline.removeListener(_onNetworkChange);
     super.dispose();
   }
 }
